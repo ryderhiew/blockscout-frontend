@@ -133,16 +133,16 @@ const colors = {
     '900': { value: '#1C4532' },
   },
   blue: {
-    '50': { value: '#EBF8FF' },
-    '100': { value: '#BEE3F8' },
-    '200': { value: '#90CDF4' },
-    '300': { value: '#63B3ED' },
-    '400': { value: '#4299E1' },
-    '500': { value: '#3182CE' },
-    '600': { value: '#2B6CB0' },
-    '700': { value: '#2C5282' },
-    '800': { value: '#2A4365' },
-    '900': { value: '#1A365D' },
+    '50': { value: '#E6FFFA' },    // Very light turquoise
+    '100': { value: '#B2F5EA' },   // Light turquoise
+    '200': { value: '#81E6D9' },   // Light-medium turquoise
+    '300': { value: '#4FD1C5' },   // Medium turquoise
+    '400': { value: '#38B2AC' },   // Standard turquoise
+    '500': { value: '#319795' },   // Main turquoise (primary)
+    '600': { value: '#2C7A7B' },   // Dark turquoise
+    '700': { value: '#285E61' },   // Darker turquoise
+    '800': { value: '#234E52' },   // Very dark turquoise
+    '900': { value: '#1D4044' },   // Darkest turquoise
   },
   red: {
     '50': { value: '#FFF5F5' },
