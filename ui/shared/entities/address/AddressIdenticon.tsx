@@ -25,6 +25,8 @@ const Icon = dynamic(
         const { blo } = (await import('blo'));
 
         return (props: IconProps) => {
+          // Add null check
+          if (!props.hash) return null;
           const data = blo(props.hash as `0x${ string }`, props.size);
           return (
             <Image
@@ -39,12 +41,20 @@ const Icon = dynamic(
         const Jazzicon = await import('react-jazzicon');
 
         return (props: IconProps) => {
-          return (
-            <Jazzicon.default
-              diameter={ props.size }
-              seed={ Jazzicon.jsNumberForAddress(props.hash) }
-            />
-          );
+          // Add null check before calling jsNumberForAddress
+          if (!props.hash || typeof props.hash !== 'string' || props.hash.length < 2) return null;
+          
+          try {
+            return (
+              <Jazzicon.default
+                diameter={ props.size }
+                seed={ Jazzicon.jsNumberForAddress(props.hash) }
+              />
+            );
+          } catch (error) {
+            console.error('Jazzicon error:', error);
+            return null;
+          }
         };
       }
 
@@ -52,6 +62,8 @@ const Icon = dynamic(
         const GradientAvatar = (await import('gradient-avatar')).default;
 
         return (props: IconProps) => {
+          // Add null check
+          if (!props.hash) return null;
           const svg = GradientAvatar(props.hash, props.size, 'circle');
           return <Box display="flex" dangerouslySetInnerHTML={{ __html: svg }}/>;
         };
@@ -76,6 +88,16 @@ const Icon = dynamic(
 type Props = IconProps;
 
 const AddressIdenticon = ({ size, hash }: Props) => {
+  // Add comprehensive null/undefined checks
+  if (!hash || typeof hash !== 'string' || hash.length < 2) {
+    return null;
+  }
+
+  // Validate it looks like an address (starts with 0x and has reasonable length)
+  if (!hash.startsWith('0x') || hash.length < 10) {
+    return null;
+  }
+
   return (
     <Box boxSize={ `${ size }px` } borderRadius="full" overflow="hidden">
       <Icon size={ size } hash={ hash }/>

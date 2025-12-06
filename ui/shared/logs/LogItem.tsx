@@ -103,14 +103,20 @@ const LogItem = ({ address, index, topics, data, decoded, type, transaction_hash
       ) }
       <RowHeader isLoading={ isLoading }>Topics</RowHeader>
       <GridItem>
-        { topics.filter(Boolean).map((item, index) => (
-          <LogTopic
-            key={ index }
-            hex={ item }
-            index={ index }
-            isLoading={ isLoading }
-          />
-        )) }
+        { topics && Array.isArray(topics) && topics
+          .map((item, originalIndex) => ({ item, originalIndex }))
+          .filter((entry): entry is { item: string; originalIndex: number } => 
+            entry.item !== null && typeof entry.item === 'string'
+          )
+          .map(({ item, originalIndex }) => (
+            <LogTopic
+              key={ originalIndex }
+              hex={ item }
+              index={ originalIndex }
+              isLoading={ isLoading }
+            />
+          ))
+        }
       </GridItem>
       <RowHeader isLoading={ isLoading }>Data</RowHeader>
       { defaultDataType ? (

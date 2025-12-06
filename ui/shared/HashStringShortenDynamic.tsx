@@ -31,6 +31,11 @@ interface Props extends BoxProps {
 }
 
 const HashStringShortenDynamic = ({ hash, fontWeight = '400', noTooltip, tailLength = TAIL_LENGTH, as = 'span', tooltipInteractive, ...props }: Props) => {
+  // Add null/undefined check at the very beginning
+  if (!hash || typeof hash !== 'string' || hash.length === 0) {
+    return null;
+  }
+
   const elementRef = useRef<HTMLSpanElement>(null);
   const [ displayedString, setDisplayedString ] = React.useState(hash);
 

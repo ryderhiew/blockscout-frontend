@@ -21,10 +21,28 @@ interface Props {
 type DataType = 'hex' | 'text' | 'address' | 'number';
 
 const VALUE_CONVERTERS: Record<DataType, (hex: string) => string> = {
-  hex: (hex) => hex,
-  text: hexToUtf8,
-  address: hexToAddress,
-  number: (hex) => BigInt(hex).toString(),
+  hex: (hex) => hex || '',
+  text: (hex) => {
+    try {
+      return hex ? hexToUtf8(hex) : '';
+    } catch {
+      return hex || '';
+    }
+  },
+  address: (hex) => {
+    try {
+      return hex ? hexToAddress(hex) : '';
+    } catch {
+      return hex || '';
+    }
+  },
+  number: (hex) => {
+    try {
+      return hex ? BigInt(hex).toString() : '0';
+    } catch {
+      return hex || '0';
+    }
+  },
 };
 const OPTIONS: Array<DataType> = [ 'hex', 'address', 'text', 'number' ];
 
@@ -36,6 +54,11 @@ const collection = createListCollection({
 });
 
 const LogTopic = ({ hex, index, isLoading }: Props) => {
+  // Add null/undefined check at the start
+  if (!hex || typeof hex !== 'string') {
+    return null;
+  }
+
   const [ selectedDataType, setSelectedDataType ] = React.useState<DataType>('hex');
 
   const handleSelectChange = React.useCallback((details: { value: Array<string> }) => {

@@ -34,7 +34,9 @@ const highlightedRoutes = (() => {
 
 const defaultColorTheme = (() => {
   const envValue = getEnvValue('NEXT_PUBLIC_COLOR_THEME_DEFAULT') as ColorThemeId | undefined;
-  return COLOR_THEMES.find((theme) => theme.id === envValue) as ColorTheme | undefined;
+  // Default to dark theme if no env variable is set
+  const themeId = envValue || 'dark';
+  return COLOR_THEMES.find((theme) => theme.id === themeId) as ColorTheme | undefined;
 })();
 
 const navigationPromoBanner = (() => {
