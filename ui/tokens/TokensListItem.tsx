@@ -32,11 +32,13 @@ const TokensListItem = ({
   isLoading,
 }: Props) => {
 
+  // Tokens API returns 'address' not 'address_hash'
+  const addressHash = ('address' in token ? token.address : token.address_hash) as string;
+  const holdersCount = ('holders' in token ? token.holders : token.holders_count) as string | number | undefined;
+
   const {
-    address_hash: addressHash,
     exchange_rate: exchangeRate,
     type,
-    holders_count: holdersCount,
     circulating_market_cap: marketCap,
   } = token;
 
@@ -59,6 +61,12 @@ const TokensListItem = ({
     return chain;
   }, [ chainInfos ]);
 
+  // Ensure token has address_hash field for TokenEntity
+  const tokenWithHash = {
+    ...token,
+    address_hash: addressHash,
+  };
+
   return (
     <ListItemMobile rowGap={ 3 }>
       <Grid
@@ -67,7 +75,7 @@ const TokensListItem = ({
       >
         <GridItem display="flex">
           <TokenEntity
-            token={ token }
+            token={ tokenWithHash }
             chain={ chainInfo }
             isLoading={ isLoading }
             jointSymbol
@@ -93,7 +101,7 @@ const TokensListItem = ({
           link={{ variant: 'secondary' }}
           noIcon
         />
-        <AddressAddToWallet token={ token } isLoading={ isLoading }/>
+        <AddressAddToWallet token={ tokenWithHash } isLoading={ isLoading }/>
       </Flex>
       { exchangeRate && (
         <HStack gap={ 3 }>
@@ -111,7 +119,9 @@ const TokensListItem = ({
       ) }
       <HStack gap={ 3 }>
         <Skeleton loading={ isLoading } textStyle="sm" fontWeight={ 500 }>Holders</Skeleton>
-        <Skeleton loading={ isLoading } textStyle="sm" color="text.secondary"><span>{ Number(holdersCount).toLocaleString() }</span></Skeleton>
+        <Skeleton loading={ isLoading } textStyle="sm" color="text.secondary">
+          <span>{ holdersCount ? Number(holdersCount).toLocaleString() : '0' }</span>
+        </Skeleton>
       </HStack>
     </ListItemMobile>
   );

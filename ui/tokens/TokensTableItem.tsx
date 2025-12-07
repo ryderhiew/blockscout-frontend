@@ -34,11 +34,13 @@ const TokensTableItem = ({
   isLoading,
 }: Props) => {
 
+  // Tokens API returns 'address' not 'address_hash'
+  const addressHash = ('address' in token ? token.address : token.address_hash) as string;
+  const holdersCount = ('holders' in token ? token.holders : token.holders_count) as string | number | undefined;
+  
   const {
-    address_hash: addressHash,
     exchange_rate: exchangeRate,
     type,
-    holders_count: holdersCount,
     circulating_market_cap: marketCap,
   } = token;
 
@@ -72,6 +74,12 @@ const TokensTableItem = ({
     return chain;
   }, [ chainInfos ]);
 
+  // Ensure token has address_hash field for TokenEntity
+  const tokenWithHash = {
+    ...token,
+    address_hash: addressHash,
+  };
+
   return (
     <TableRow className="group">
       <TableCell>
@@ -87,7 +95,7 @@ const TokensTableItem = ({
           </Skeleton>
           <Flex overflow="hidden" flexDir="column" rowGap={ 2 }>
             <TokenEntity
-              token={ token }
+              token={ tokenWithHash }
               chain={ chainInfo }
               isLoading={ isLoading }
               jointSymbol
@@ -105,7 +113,7 @@ const TokensTableItem = ({
                 link={{ variant: 'secondary' }}
               />
               <AddressAddToWallet
-                token={ token }
+                token={ tokenWithHash }
                 isLoading={ isLoading }
                 iconSize={ 5 }
                 opacity={ 0 }
@@ -140,7 +148,7 @@ const TokensTableItem = ({
           fontWeight={ 500 }
           display="inline-block"
         >
-          { Number(holdersCount).toLocaleString() }
+          { holdersCount ? Number(holdersCount).toLocaleString() : '0' }
         </Skeleton>
       </TableCell>
     </TableRow>

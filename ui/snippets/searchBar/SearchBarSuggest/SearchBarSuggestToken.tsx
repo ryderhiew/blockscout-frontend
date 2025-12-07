@@ -18,11 +18,15 @@ const SearchBarSuggestToken = ({ data, isMobile, searchTerm, addressFormat, chai
   const icon = <TokenEntity.Icon token={{ ...data, type: data.token_type }} chain={ chainInfo }/>;
   const verifiedIcon = <IconSvg name="certified" boxSize={ 4 } color="green.500" ml={ 1 } flexShrink={ 0 }/>;
   const certifiedIcon = <ContractCertifiedLabel iconSize={ 4 } boxSize={ 4 } ml={ 1 } flexShrink={ 0 }/>;
+  
+  // Handle both 'address' and 'address_hash' field names from search API
+  const addressHash = ('address' in data ? data.address : data.address_hash) as string;
+  
   const hash = (() => {
     if ('filecoin_robust_address' in data && data.filecoin_robust_address) {
       return data.filecoin_robust_address;
     }
-    return addressFormat === 'bech32' ? toBech32Address(data.address_hash) : data.address_hash;
+    return addressFormat === 'bech32' ? toBech32Address(addressHash) : addressHash;
   })();
 
   const isVerified = (() => {

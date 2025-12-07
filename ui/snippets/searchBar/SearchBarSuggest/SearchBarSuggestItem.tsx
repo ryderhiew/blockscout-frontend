@@ -42,13 +42,17 @@ const SearchBarSuggestItem = ({ data, isMobile, searchTerm, onClick, addressForm
   const url = (() => {
     switch (data.type) {
       case 'token': {
-        return route({ pathname: '/token/[hash]', query: { hash: data.address_hash } }, multichainContext);
+        // Search API returns 'address' for tokens, not 'address_hash'
+        const tokenHash = ('address' in data ? data.address : data.address_hash) as string;
+        return route({ pathname: '/token/[hash]', query: { hash: tokenHash } }, multichainContext);
       }
       case 'contract':
       case 'address':
       case 'label':
       case 'metadata_tag': {
-        return route({ pathname: '/address/[hash]', query: { hash: data.address_hash } });
+        // Search API may return 'address' instead of 'address_hash'
+        const addressHash = ('address' in data ? data.address : data.address_hash) as string;
+        return route({ pathname: '/address/[hash]', query: { hash: addressHash } });
       }
       case 'transaction': {
         return route({ pathname: '/tx/[hash]', query: { hash: data.transaction_hash } }, multichainContext);

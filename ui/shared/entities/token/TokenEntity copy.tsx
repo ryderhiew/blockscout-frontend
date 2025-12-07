@@ -21,11 +21,8 @@ import { distributeEntityProps, getIconProps } from '../base/utils';
 type LinkProps = EntityBase.LinkBaseProps & Pick<EntityProps, 'token'>;
 
 const Link = chakra((props: LinkProps) => {
-  // Handle both 'address' and 'address_hash' from different API endpoints
-  const tokenHash = ('address' in props.token ? props.token.address : props.token.address_hash) as string;
-  
   const defaultHref = route(
-    { pathname: '/token/[hash]', query: { ...props.query, hash: tokenHash } },
+    { pathname: '/token/[hash]', query: { ...props.query, hash: props.token.address_hash } },
     { chain: props.chain, external: props.external },
   );
 
@@ -121,13 +118,10 @@ const Symbol = (props: SymbolProps) => {
 type CopyProps = Omit<EntityBase.CopyBaseProps, 'text'> & Pick<EntityProps, 'token'>;
 
 const Copy = (props: CopyProps) => {
-  // Handle both 'address' and 'address_hash' from different API endpoints
-  const tokenHash = ('address' in props.token ? props.token.address : props.token.address_hash) as string;
-  
   return (
     <EntityBase.Copy
       { ...props }
-      text={ tokenHash }
+      text={ props.token.address_hash }
     />
   );
 };
